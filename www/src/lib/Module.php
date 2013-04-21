@@ -94,6 +94,10 @@ class Module
 	// 	$this->runModule( $module_name, $opt, $mode );
 	// 	return ob_get_clean( $oid );
 	// }
+	
+	public function model( $class_name, $return = false, $path = M_FOLDER ) {
+		return App::$i->lib( $class_name, $return, $path );
+	}
 
 	// Добавляем возможность передавать переменные между controller и view через объект $this
 

@@ -74,7 +74,7 @@ class Route_Router
 			$link = $r . '/' . $link;
 		}
 
-		$link = URL . '?r=' . $link;
+		$link = URL . '/index.php?r=' . $link;
 		if ( $print )
 			echo $link;
 		return $link;

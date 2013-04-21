@@ -8,17 +8,11 @@ define( 'M_FOLDER', BASEPATH . '/m' );
 define( 'V_FOLDER', BASEPATH . '/v' );
 define( 'C_FOLDER', BASEPATH . '/c' );
 define( 'T_FOLDER', V_FOLDER . '/template' );
+define( 'CFG_FOLDER', BASEPATH . '/cfg' );
 
-// Запуск приложения
-require_once BASEPATH . '/App.php';
+chdir( BASEPATH );
+
+require_once 'App.php';
 App::init();
-
-
-
-
-
-
-// Любопытство
-
-// echo "<pre>";
-// var_dump(App::$i);
+$__debugger = App::$i->lib( 'Debug_Debugger', true ); // Подключаем дебаггер
+App::run(); // Запускаем приложение

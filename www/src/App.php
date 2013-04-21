@@ -31,9 +31,7 @@ class App
 	 */
 	public static function lib( $class_name, $return = false, $path = LIB_FOLDER ) {
 		if ( ! class_exists( $class_name ) ) { // Проверяем есть ли необходимость подключать библиотеку
-			$p = explode( '_', $class_name ); // Отделяем путь от имени класса
-			foreach ($p as $elm)
-				$path .= '/' . $elm; // Создаем путь к файлу с нашим классом
+			$path .= '/' . implode( '/', explode( '_', $class_name )); // Создаем путь к файлу с вызванным классом
 			include( $path . '.php' );
 		}
 
@@ -47,16 +45,24 @@ class App
 	/**
 	 * Инициализация приложения
 	 * 
-	 * Производит запуск приложения и его настройку (вместо __construct)
+	 * Создает объект приложения и передает ему настройки (вместо __construct)
 	 *
 	 * @param array $cfg Конфигурации заменяющие настройки по умолчанию
+	 * @return App Возвращает объект приложения
 	 */
 	public function init( $cfg = array() ) {
 		self::$i = new self;
 		self::$i->cfg = array_merge( self::$i->cfg, $cfg ); // Обновляем настройки
 		self::$i->router = self::$i->lib( 'Route_Router', true ); // Создаем объект роутера
-		self::$i->router->drive( self::$i->router->request )->run(); // Запускаем HMVC!
-		
 		return self::$i;
+	}
+
+	/**
+	 * Запуск приложения
+	 *
+	 * Отделен от метода init чтобы была возможность подключить библиотеки до запуска приложения
+	 */
+	public function run() {
+		self::$i->router->drive( self::$i->router->request )->run(); // Запускаем HMVC!
 	}
 }
