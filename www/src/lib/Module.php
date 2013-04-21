@@ -8,9 +8,12 @@
  */
 class Module
 {
+	const JUST_VIEW = 3, // Запускать только вид
+		JUST_CONTROLLER = 1; // Запускать только контроллер
 	private $_template, // Шаблон применяющийся для обертки вида (если false - не применять)
 		$_controller, // Путь к контроллеру (false - не использовать контроллер)
-		$_view; // Путь к файлу вида (false - не использовать вид)
+		$_view, // Путь к файлу вида (false - не использовать вид)
+		$_parent; // Опции переданные от модуля-родителя
 	private $_data = array(); // Перегруженные данные
 
 	/**
@@ -20,17 +23,19 @@ class Module
 	 *
 	 * @param string|bool $controller Путь к файлу контроллера. Если false - контроллер использоваться не будет
 	 * @param string|bool $view Пукть к файлу вида. Если false - вид использоваться не будет
+	 * @param mixed $opt Данные которые требуется передать в дочерний модуль
 	 */
-	function __construct( $controller = false, $view = false ) {
+	function __construct( $controller = false, $view = false, $opt = NULL ) {
 		$this->_controller = $controller;
 		$this->_view = $view;
+		$this->_parent = $opt;
 	}
 
 	/**
 	 * Запуск контроллера
 	 */
 	public function perform() {
-		include $this->_controller;
+		return include $this->_controller;
 	}
 
 	/**
@@ -44,13 +49,19 @@ class Module
 	 * Запуск модуля
 	 *
 	 * Запускает модуль и контролирует его выполнение
+	 *
+	 * @param int $mode Если 1 - выполняется только контроллер, если 3 - только вид, 2 - оба
+	 * @return mixed Возвращает все, что вернет контроллер
 	 */
-	public function run() {
-		if ( $this->_controller )
-			$this->perform();
+	public function run($mode = 2) {
+		$return = NULL;
+		if ( $mode < 3 && $this->_controller )
+			$return = $this->perform();
 
-		if ( $this->_view )
+		if ( $mode > 1 && $this->_view )
 			$this->render();
+
+		return $return;
 	}
 
 	/**
@@ -60,9 +71,11 @@ class Module
 	 *
 	 * @param string $module_name Название модуля
 	 * @param mixed $opt Данные которые требуется передать в дочерний модуль
+	 * @param int $mode Если 1 - выполняется только контроллер, если 3 - только вид, 2 - оба
+	 * @return mixed Возвращает все, что вернет контроллер
 	 */
-	public function runModule( $module_name, $opt = NULL ) {
-		$module = App::$i->router->drive( $module_name, $opt )->run();
+	public function runModule( $module_name, $opt = NULL, $mode = 2 ) {
+		return App::$i->router->drive( $module_name, $opt )->run( $mode );
 	}
 
 	/**
@@ -73,13 +86,14 @@ class Module
 	 *
 	 * @param string $module_name Название модуля
 	 * @param mixed $opt Данные которые требуется передать в дочерний модуль
+	 * @param int $mode Если 1 - выполняется только контроллер, если 3 - только вид, 2 - оба
 	 * @param string Данные которые вывел запущенный модуль
 	 */
-	public function getModule( $module_name, $opt = NULL ) {
-		$oid = ob_start();
-		$this->runModule( $module_name, $opt );
-		return ob_get_clean( $oid );
-	}
+	// public function getModuleView( $module_name, $opt = NULL, $mode = 2 ) {
+	// 	$oid = ob_start();
+	// 	$this->runModule( $module_name, $opt, $mode );
+	// 	return ob_get_clean( $oid );
+	// }
 
 	// Добавляем возможность передавать переменные между controller и view через объект $this
 
