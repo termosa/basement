@@ -52,9 +52,6 @@ class App
 	 * @param array $cfg Конфигурации заменяющие настройки по умолчанию
 	 */
 	public function init( $cfg = array() ) {
-		if ( ! is_null( self::$i ) )
-			return self::$i;
-
 		self::$i = new self;
 		self::$i->cfg = array_merge( self::$i->cfg, $cfg ); // Обновляем настройки
 		self::$i->router = self::$i->lib( 'Route_Router', true ); // Создаем объект роутера
