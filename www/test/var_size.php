@@ -220,4 +220,84 @@ if($globalVars){
 
 	$t = memory_get_usage()-$s+$diff;
 	echo "#a_len_8:\t" . $t . "\n";
+
+	//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
+	unset($a);
+	$a = NULL;
+	$s = memory_get_usage();
+
+	$a = array(); // Пустой массив занимает 48 байт
+
+	$t = memory_get_usage()-$s+$diff;
+	echo "#a_array_empty:\t" . $t . "\n";
+
+	//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
+	unset($a);
+	$a = array();
+	$s = memory_get_usage();
+
+	array_push($a, NULL); // +120 (+128) байт за один элемент?!
+
+	$t = memory_get_usage()-$s+$diff;
+	echo "#a_array_1_NULL:\t" . $t . "\n";
+
+	//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
+	unset($a);
+	$a = array();
+	$s = memory_get_usage();
+
+	$a = array(NULL, NULL, NULL); // За каждый следующий - еще 80 байт, как за обычную переменную
+
+	$t = memory_get_usage()-$s+$diff;
+	echo "#a_array_3_NULL:\t" . $t . "\n";
+
+	//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
+	unset($a);
+	$a = array();
+	$s = memory_get_usage();
+
+	$a = array(array()); // +168 (+128) за еще один массив
+
+	$t = memory_get_usage()-$s+$diff;
+	echo "#a_array_1_array:\t" . $t . "\n";
+
+	//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
+	unset($a);
+	$a = array();
+	$s = memory_get_usage();
+
+	$a = array(array(NULL)); // +120 за NULL?
+
+	$t = memory_get_usage()-$s+$diff;
+	echo "#a_array_1_array_1_NULL:\t" . $t . "\n";
+
+	//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
+	unset($a);
+	$a = array();
+	$s = memory_get_usage();
+
+	$a = array(array(NULL),array()); // +128 за еще один пустой массив
+
+	$t = memory_get_usage()-$s+$diff;
+	echo "#a_array_1_array_1_NULL_and_array:\t" . $t . "\n";
+
+	//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
+	unset($a);
+	$a = array();
+	$s = memory_get_usage();
+
+	$a = array(array(NULL),array(array())); // +168 за массив внутри
+
+	$t = memory_get_usage()-$s+$diff;
+	echo "#a_array_1_array_1_NULL_and_array_with_array:\t" . $t . "\n";
+
+	//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
+	unset($a);
+	$a = array();
+	$s = memory_get_usage();
+
+	$a = array(array(NULL),array('s')); // Строка обошлась в 136 байт
+
+	$t = memory_get_usage()-$s+$diff;
+	echo "#a_array_1_array_1_NULL_and_array_with_string:\t" . $t . "\n";
 }
