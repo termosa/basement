@@ -1,3 +1,3 @@
 <?php
-if (isset($_GET['search']) && isset($_GET['query']))
-	$this->s_query = $_GET['query'];
+$s_query = (isset($_GET['search']) && isset($_GET['query'])) ?
+	$_GET['query'] : '';

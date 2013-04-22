@@ -57,7 +57,13 @@
         {
             $size         = sprintf("%u", memory_get_usage());
             $filesizename = array(" Bytes", " Kb", " Mb", " Gb", " Tb", " Pb", " Eb", " Zb", " Yb");
-            return $size ? round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . $filesizename[$i] : '0 Bytes';
+            $memory1 = $size ? round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . $filesizename[$i] : '0 Bytes';
+
+            $size         = sprintf("%u", memory_get_usage(true));
+            $filesizename = array(" Bytes", " Kb", " Mb", " Gb", " Tb", " Pb", " Eb", " Zb", " Yb");
+            $memory2 = $size ? round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . $filesizename[$i] : '0 Bytes';
+
+            return ($memory1 . " / " . $memory2);
         }
 
         public static function ShowPhpIniAccess($access)

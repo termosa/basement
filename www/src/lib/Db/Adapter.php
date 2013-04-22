@@ -19,8 +19,8 @@ class Db_Adapter extends PDO
 	 * @param bool $update Если true и объект PDO для переданного тега уже существует, то он заменится новым объектом
 	 * @return PDO Возвратит созданный объект соединения с базой данных
 	 */
-	public function getPDO( $tag = 'default', $update = false ) {
-		if ( is_null( $cfg ))
+	public static function getPDO( $tag = 'default', $update = false ) {
+		if ( is_null( self::$cfg ))
 			self::$cfg = parse_ini_file( CFG_FOLDER . '/database.ini', true );
 
 		if ( ! isset( self::$db[$tag] ))

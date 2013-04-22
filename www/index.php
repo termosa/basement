@@ -12,7 +12,20 @@ define( 'CFG_FOLDER', BASEPATH . '/cfg' );
 
 chdir( BASEPATH );
 
+
 require_once 'App.php';
 $__debugger = lib( 'Debug_Debugger', true ); // Подключаем дебаггер
-lib( 'Module' );
 run( $_request ); // Запускаем приложение
+
+
+
+$start = memory_get_usage();
+
+$a = NULL;
+$a = 'a';
+$a = 'abcdefgh';
+$a = 'abcdefghijklmnop';
+// $a = str_repeat('Hello',1);
+
+echo "<pre>";
+var_dump(memory_get_usage() - $start);

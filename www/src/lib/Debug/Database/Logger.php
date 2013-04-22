@@ -4,7 +4,7 @@ class Debug_Database_Logger
 {
 	public static $log = array();
 
-	public function set( $query = NULL ) {
+	public static function set( $query = NULL ) {
 		$trace = debug_backtrace( DEBUG_BACKTRACE_PROVIDE_OBJECT, 2 );
 		if ( is_null( $query ))
 			$sql = $trace[1]['args'][0];

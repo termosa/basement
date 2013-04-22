@@ -7,8 +7,8 @@
  */
 class Debug_Debugger
 {
-	private static $start_time = NULL;
-	private static $starttime = NULL;
+	private $start_time = NULL;
+	private $starttime = NULL;
 	/**
 	 * Запускает буфер
 	 */
@@ -105,7 +105,7 @@ class Debug_Debugger
 	 * Собирает данные из буфера и дописывает скрипт в тег head
 	 */
 	function __destruct() {
-		global $_cfg, $router;
+		global $_cfg, $router, $_request;
 		$content = ob_get_contents();
 		ob_end_clean();
 
@@ -129,7 +129,7 @@ class Debug_Debugger
 					float: right;
 					background: #181818 url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAAAAACMmsGiAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABdJREFUCB1jUlGRkWH6CQRMf//y8oJZAFUaCmUwcfODAAAAAElFTkSuQmCC");
 					font-size: 12px;
-					color: grey;
+					color: silver;
 					min-height: 22px;
 					position: absolute;
 					right: 0;
@@ -182,19 +182,19 @@ class Debug_Debugger
 
 				#i-debug-panel a span
 				{
-					color: #555;
+					color: silver;
 				}
 
 				#i-debug-panel a span.small
 				{
 					font-size: 10px;
-					color: #777;
+					color: silver;
 				}
 
 				#i-debug-panel table
 				{
-					font-size: 8pt;
-					color: gray;
+					font-size: 9pt;
+					color: rgb(163, 163, 163);
 					font-weight: normal;
 					border: 0;
 					padding: 0;
@@ -235,7 +235,7 @@ class Debug_Debugger
 
 				#i-debug-panel table td span
 				{
-					color: #444;
+					color: silver;
 				}
 
 				#i-debug-panel table tr:hover
@@ -519,7 +519,7 @@ class Debug_Debugger
 							</tr>
 							<tr>
 								<td>query</td>
-								<td><?php echo $router->request?></td>
+								<td><?php echo $_request?></td>
 							</tr>
 							<?php foreach ($_cfg as $k => $v):?>
 								<tr>

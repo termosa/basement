@@ -9,7 +9,7 @@
 
 	<fieldset>
 		<legend>block/message</legend>
-		<?php $getMessage = run( 'block/message', array( 'sun', 'ice', 'grass' ), Module::JUST_C ); ?>
+		<?php $getMessage = run( 'block/message', array( 'sun', 'ice', 'grass' ), JUST_C ); ?>
 
 		<?php if ( ! empty( $getMessage )): ?>
 			<p><small>Someone sent it to you: '<?php echo $getMessage; ?>'</small></p>

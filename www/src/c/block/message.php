@@ -65,7 +65,6 @@ echo $query->getSQL() . PHP_EOL;
 //SELECT * FROM foo WHERE bar = 'fo' AND baz = 'baz' AND num = '2' AND empty=NULL 
 
 echo "</pre>";
-return void;
 
 
 
@@ -100,31 +99,12 @@ return void;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-if ( ! count( $this->_parent )) {
-	$this->message = 'I have no options yet!';
+if ( ! count( $opt )) {
+	$message = 'I have no options yet!';
 	return 'Please, send me some options.';
 }
 
-$this->message = "I took this options: '"
-	. implode( "', '", $this->_parent ) . "'.";
+$message = "I took this options: '"
+	. implode( "', '", $opt ) . "'.";
 
-return 'I have ' . count( $this->_parent ) . ' options. Thanks man!';
+return 'I have ' . count( $opt ) . ' options. Thanks man!';

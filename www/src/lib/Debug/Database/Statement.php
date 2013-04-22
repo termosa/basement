@@ -93,8 +93,8 @@ class Debug_Database_Statement extends PDOStatement
 		return substr($value, 0, $length);
 	}
 
-	public function execute( array $input_parameters = array() ) {
-		$query = parent::execute( $input_parameters );
+	public function execute( $bound_input_params = NULL ) {
+		$query = parent::execute( $bound_input_params );
 		Debug_Database_Logger::set($this);
 		return $query;
 	}
