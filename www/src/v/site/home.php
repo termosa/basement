@@ -5,11 +5,11 @@
 	<title>Done!</title>
 </head>
 <body>
-	<h1><?php echo $this->msg; ?></h1>
+	<h1><?php echo $msg; ?></h1>
 
 	<fieldset>
 		<legend>block/message</legend>
-		<?php $getMessage = $this->runModule( 'block/message', array( 'sun', 'ice', 'grass' ), Module::JUST_C ); ?>
+		<?php $getMessage = run( 'block/message', array( 'sun', 'ice', 'grass' ), Module::JUST_C ); ?>
 
 		<?php if ( ! empty( $getMessage )): ?>
 			<p><small>Someone sent it to you: '<?php echo $getMessage; ?>'</small></p>

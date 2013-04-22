@@ -1,8 +1,8 @@
 <?php
 
-App::$i->lib( 'Debug_Database_Logger' ); // TODO: УДАЛИТЬ
-App::$i->lib( 'Debug_Database_Adapter' ); // TODO: УДАЛИТЬ
-App::$i->lib( 'Debug_Database_Statement' ); // TODO: УДАЛИТЬ
+lib( 'Debug_Database_Logger' ); // TODO: УДАЛИТЬ
+lib( 'Debug_Database_Adapter' ); // TODO: УДАЛИТЬ
+lib( 'Debug_Database_Statement' ); // TODO: УДАЛИТЬ
 
 /**
  * Адаптер базы данных

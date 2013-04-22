@@ -1,4 +1,4 @@
 <?php
 
 $title = 'Templates done!';
-$this->msg = 'There is msg for you!';
+$msg = 'There is msg for you!';

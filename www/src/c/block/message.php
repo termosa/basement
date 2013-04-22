@@ -1,6 +1,6 @@
 <?php
 
-App::$i->lib( 'Db_Adapter' );
+lib( 'Db_Adapter' );
 $pdo = Db_Adapter::getPDO( 'memory' );
 
 echo "<pre>";

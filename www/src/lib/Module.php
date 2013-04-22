@@ -1,5 +1,17 @@
 <?php
 
+function run($module_name, $opt=NULL, $mode=2) {
+	$return = NULL;
+	$m = drive( $module_name );
+	if ( $mode < 3 && $m->_controller )
+		$return = include $m->_controller;
+
+	if ( $mode > 1 && $m->_view )
+		include $m->_view;
+
+	return $return;
+}
+
 /**
  * Модуль
  *
@@ -10,7 +22,7 @@ class Module
 {
 	const JUST_V = 3, // Запускать только вид
 		JUST_C = 1; // Запускать только контроллер
-	private $_template, // Шаблон применяющийся для обертки вида (если false - не применять)
+	public $_template, // Шаблон применяющийся для обертки вида (если false - не применять)
 		$_controller, // Путь к контроллеру (false - не использовать контроллер)
 		$_view, // Путь к файлу вида (false - не использовать вид)
 		$_parent; // Опции переданные от модуля-родителя
@@ -50,10 +62,12 @@ class Module
 	 *
 	 * Запускает модуль и контролирует его выполнение
 	 *
+	 * @param string $module_name Название модуля
+	 * @param mixed $opt Данные которые требуется передать в дочерний модуль
 	 * @param int $mode Если 1 - выполняется только контроллер, если 3 - только вид, 2 - оба
 	 * @return mixed Возвращает все, что вернет контроллер
 	 */
-	public function run($mode = 2) {
+	public function run( $opt = NULL, $mode = 2 ) {
 		$return = NULL;
 		if ( $mode < 3 && $this->_controller )
 			$return = $this->perform();
@@ -62,20 +76,6 @@ class Module
 			$this->render();
 
 		return $return;
-	}
-
-	/**
-	 * Запуск дочернего модуля
-	 * 
-	 * Запускает на исполнение указанный модуль
-	 *
-	 * @param string $module_name Название модуля
-	 * @param mixed $opt Данные которые требуется передать в дочерний модуль
-	 * @param int $mode Если 1 - выполняется только контроллер, если 3 - только вид, 2 - оба
-	 * @return mixed Возвращает все, что вернет контроллер
-	 */
-	public function runModule( $module_name, $opt = NULL, $mode = 2 ) {
-		return App::$i->router->drive( $module_name, $opt )->run( $mode );
 	}
 
 	/**
@@ -95,8 +95,8 @@ class Module
 	// 	return ob_get_clean( $oid );
 	// }
 	
-	public function model( $class_name, $return = false, $path = M_FOLDER ) {
-		return App::$i->lib( $class_name, $return, $path );
+	public function model( $class_name, $return = false ) {
+		return lib( $class_name, $return, M_FOLDER );
 	}
 
 	// Добавляем возможность передавать переменные между controller и view через объект $this

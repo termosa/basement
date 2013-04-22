@@ -8,12 +8,37 @@
 class Debug_Debugger
 {
 	private static $start_time = NULL;
+	private static $starttime = NULL;
 	/**
 	 * Запускает буфер
 	 */
 	function __construct() {
-		$this->start_time = microtime(true);
+		$this->start_time = microtime();
+		$this->starttime = microtime(true);
 		ob_start();
+	}
+
+	public static function getDiff( $s ) {
+		$s = explode( ' ', $s );
+		$f = explode( ' ', microtime() );
+
+		$sm = (double) $s[0];
+		$fm = (double) $f[0];
+
+		$ss = (int) $s[1];
+		$fs = (int) $f[1];
+
+		$sec = $fs - $ss;
+		$mic = $fm - $sm;
+
+		if ($mic < 0) {
+			$mic = 1 + $mic;
+			$sec--;
+		}
+
+		$mic = substr($mic, 2);
+
+		return $sec . '.' . $mic;
 	}
 
 	function showVarPanel( $head, $link, $data ) {
@@ -80,11 +105,12 @@ class Debug_Debugger
 	 * Собирает данные из буфера и дописывает скрипт в тег head
 	 */
 	function __destruct() {
+		global $_cfg, $router;
 		$content = ob_get_contents();
 		ob_end_clean();
 
 		ob_start();
-		$debug = App::$i->lib( 'Debug_DebugPanel', true );
+		$debug = lib( 'Debug_DebugPanel', true );
 		?>
 
 			<style type="text/css">
@@ -105,6 +131,9 @@ class Debug_Debugger
 					font-size: 12px;
 					color: grey;
 					min-height: 22px;
+					position: absolute;
+					right: 0;
+					margin-top: 15px;
 
 					border-radius: 3px 0 0 3px;
 					-moz-border-radius: 3px 0 0 3px;
@@ -336,15 +365,15 @@ class Debug_Debugger
 
 			<div style="clear: both"></div>
 			<div id="i-debug-panel">
-				<span class="icon show-profile" id="i-show-profile" onclick="DebugPanel_ShowHidePanel()"></span>
+				<span class="icon show-profile" id="i-show-profile" onclick="DebugPanel_ShowHidePanel()" style="display:none;"></span>
 
-				<ul id="i-debug-panel-list" style="display: none">
+				<ul id="i-debug-panel-list" style="display: block;">
 					<li class="show-hide-elem">
 						<span class="icon hide-profile" onclick="DebugPanel_ShowHidePanel()"></span>
 					</li>
 					<li>
 						<span class="icon time"></span>
-						<?php echo number_format(floatval(microtime(true) - $this->start_time), 3);?> s
+						<?php echo number_format(self::getDiff($this->start_time), 6); ?> s
 					</li>
 					<li>
 						<span class="icon mem"></span>
@@ -374,7 +403,7 @@ class Debug_Debugger
 					</li>
 				</ul>
 
-				<div id="i-debug-panel-all-panels" style="display: none">
+				<div id="i-debug-panel-all-panels" style="display: block;">
 					<?php if ( class_exists( 'Debug_Database_Logger' )): ?>
 						<div id="i-database-log" class="panel" style="display: none">
 							<table cellpadding="0" cellspacing="0">
@@ -490,9 +519,9 @@ class Debug_Debugger
 							</tr>
 							<tr>
 								<td>query</td>
-								<td><?php echo App::$i->router->request?></td>
+								<td><?php echo $router->request?></td>
 							</tr>
-							<?php foreach (App::$i->cfg as $k => $v):?>
+							<?php foreach ($_cfg as $k => $v):?>
 								<tr>
 									<td><?php echo $k?></td>
 									<td><?php echo $this->VarDump($v)?></td>

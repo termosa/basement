@@ -13,6 +13,6 @@ define( 'CFG_FOLDER', BASEPATH . '/cfg' );
 chdir( BASEPATH );
 
 require_once 'App.php';
-App::init();
-$__debugger = App::$i->lib( 'Debug_Debugger', true ); // Подключаем дебаггер
-App::run(); // Запускаем приложение
+$__debugger = lib( 'Debug_Debugger', true ); // Подключаем дебаггер
+lib( 'Module' );
+run( $_request ); // Запускаем приложение
