@@ -1,6 +1,6 @@
 <?php
 
-lib( 'Db_Adapter' );
+inc('Db_Adapter');
 $pdo = Db_Adapter::getPDO( 'memory' );
 
 echo "<pre>";
@@ -65,11 +65,6 @@ echo $query->getSQL() . PHP_EOL;
 //SELECT * FROM foo WHERE bar = 'fo' AND baz = 'baz' AND num = '2' AND empty=NULL 
 
 echo "</pre>";
-
-
-
-
-
 
 
 

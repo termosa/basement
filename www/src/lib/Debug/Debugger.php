@@ -110,7 +110,10 @@ class Debug_Debugger
 		ob_end_clean();
 
 		ob_start();
-		$debug = lib( 'Debug_DebugPanel', true );
+		chdir(BASEPATH);
+		
+		inc('Debug_DebugPanel');
+		$debug = new Debug_DebugPanel;
 		?>
 
 			<style type="text/css">

@@ -16,7 +16,7 @@
         {
             $files  = get_included_files();
             $stat   = array();
-            lib( 'Debug_FileSys' );
+            inc('Debug_FileSys');
             foreach ($files as $file)
             {
                 $stat[] = array('file'  => $file,

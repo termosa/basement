@@ -1,8 +1,8 @@
 <?php
 
-lib( 'Debug_Database_Logger' ); // TODO: УДАЛИТЬ
-lib( 'Debug_Database_Adapter' ); // TODO: УДАЛИТЬ
-lib( 'Debug_Database_Statement' ); // TODO: УДАЛИТЬ
+inc('Debug_Database_Logger'); // TODO: УДАЛИТЬ
+inc('Debug_Database_Adapter'); // TODO: УДАЛИТЬ
+inc('Debug_Database_Statement'); // TODO: УДАЛИТЬ
 
 /**
  * Адаптер базы данных
@@ -21,7 +21,7 @@ class Db_Adapter extends PDO
 	 */
 	public static function getPDO( $tag = 'default', $update = false ) {
 		if ( is_null( self::$cfg ))
-			self::$cfg = parse_ini_file( CFG_FOLDER . '/database.ini', true );
+			self::$cfg = parse_ini_file( BASEPATH . '/cfg/database.ini', true );
 
 		if ( ! isset( self::$db[$tag] ))
 			self::$db[$tag] = new Debug_Database_Adapter( self::$cfg[$tag]['connection'], // TODO: ЗАМЕНИТЬ НА PDO
