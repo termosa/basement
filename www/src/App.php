@@ -41,9 +41,14 @@ function parsePath($path, $current) {
 	if (strpos($path, '/') === 0)
 		return substr($path, 1);
 
-	$current = substr($current, 1);
+	if ('/' == $current)
+		return $path;
+
+	if (! $current = substr($current, 1))
+		$current = '';
+
 	if ($path == '.')
-		return  $current;
+		return $current;
 
 	if ($pos = strrpos($current, '/'))
 		$current = substr($current, 0, $pos);
@@ -74,15 +79,20 @@ function lnk($link = '/', $get = array()) {
 
 function run($module, $opt=NULL, $mode=2) {
 	global $_runStack, $_template;
+	$return = NULL;
 
 	$module = '/' . parsePath($module, $_runStack[count($_runStack)-1]);
 
-	$return = NULL;
-	if (! file_exists($controller = C_PATH . $module . '.php'))
+	if (strpos($module, '/_') !== false){
 		$controller = false;
-	
-	if (! file_exists($view = V_PATH . $module . '.php'))
 		$view = false;
+	} else {
+		if (! file_exists($controller = C_PATH . $module . '.php'))
+			$controller = false;
+		
+		if (! file_exists($view = V_PATH . $module . '.php'))
+			$view = false;
+	}
 
 	if (! ($controller || $view)) {
 		$module = '/error/404';
@@ -92,7 +102,7 @@ function run($module, $opt=NULL, $mode=2) {
 
 	array_push($_runStack, $module);
 
-	$tpl = $_template;
+	$template = $_template;
 	$_template = false;
 	ob_start();
 	// -
@@ -104,8 +114,8 @@ function run($module, $opt=NULL, $mode=2) {
 	// -
 	$content = ob_get_contents();
 	ob_end_clean();
-	if ($tpl)
-		include T_PATH . '/' . $tpl . '.php';
+	if ($template)
+		include T_PATH . '/' . $template . '.php';
 	else
 		echo $content;
 
