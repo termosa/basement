@@ -83,7 +83,7 @@ function run($module, $opt=NULL, $mode=2) {
 
 	$module = '/' . parsePath($module, $_runStack[count($_runStack)-1]);
 
-	if (strpos($module, '/_') !== false){
+	if (count($_runStack) == 1 && strpos($module, '/_') !== false) {
 		$controller = false;
 		$view = false;
 	} else {
