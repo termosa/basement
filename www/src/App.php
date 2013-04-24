@@ -7,14 +7,14 @@ define('L_PATH', BASEPATH . '/lib'); // Папка контроллеров
 define('C_PATH', BASEPATH . '/c'); // Папка контроллеров
 define('M_PATH', BASEPATH . '/m'); // Папка моделей
 define('V_PATH', BASEPATH . '/v'); // Папка видов
-define('T_PATH', V_PATH . '/t'); // Папка шаблонов
+define('T_PATH', V_PATH . '/_t'); // Папка шаблонов
 
 // Объявление необходимых констант для упрощенной работы с фреймворком
 define('JUST_V', 3);
 define('JUST_C', 1);
 
 // Объявление глобальных переменных фреймворка (сравнимо с настройками)
-global $_request, $_template, $_db, $_runStack;
+// global $_request, $_template, $_db, $_runStack;
 $_request = 'page/home'; // Выполняем запрос & запрос по умолчанию
 $_template = 'main'; // Шаблон & шаблон по умолчанию
 $_db = NULL; // Ячейка для адаптера баз данных
@@ -22,6 +22,20 @@ $_runStack = array('/'); // Стэк для запускаемых модуле�
 
 if (isset($_GET['r']) && ! empty($_GET['r']) && $_GET['r'] != '/')
 		$_request = '/' . $_GET['r'];
+
+// Подключает библиотеки в зендовском формате, может создать объект
+function inc($class, $returnObj = false, $from = L_PATH) {
+	$r = include_once $from . '/' . implode('/', explode('_', $class)) . '.php';
+
+	if ($returnObj)
+		return new $class;
+	return $r;
+}
+
+// Обертка для inc() которая подключает модели
+function incM($class, $returnObj = false) {
+	return inc($class, $returnObj, M_PATH);
+}
 
 function parsePath($path, $current) {
 	if (strpos($path, '/') === 0)
@@ -59,7 +73,7 @@ function lnk($link = '/', $get = array()) {
 }
 
 function run($module, $opt=NULL, $mode=2) {
-	global $_runStack;
+	global $_runStack, $_template;
 
 	$module = '/' . parsePath($module, $_runStack[count($_runStack)-1]);
 
@@ -78,25 +92,23 @@ function run($module, $opt=NULL, $mode=2) {
 
 	array_push($_runStack, $module);
 
-	if ($mode < 3 && $controller)
-		$return = include $controller;
+	$tpl = $_template;
+	$_template = false;
+	ob_start();
+	// -
+		if ($mode < 3 && $controller)
+			$return = include $controller;
 
-	if ($mode > 1 && $view)
-		include $view;
+		if ($mode > 1 && $view)
+			include $view;
+	// -
+	$content = ob_get_contents();
+	ob_end_clean();
+	if ($tpl)
+		include T_PATH . '/' . $tpl . '.php';
+	else
+		echo $content;
 
 	array_pop($_runStack);
 	return $return;
-}
-
-function inc($class, $returnObj = false, $from = L_PATH) {
-	if (! class_exists($class))
-		$r = include ($from . '/' . implode('/', explode('_', $class)) . '.php');
-
-	if ($returnObj)
-		return new $class;
-	return $r;
-}
-
-function incM($class, $returnObj = false) {
-	return inc($class, $returnObj, M_PATH);
 }

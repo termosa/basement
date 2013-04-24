@@ -8,19 +8,19 @@
 class Debug_Debugger
 {
 	private $start_time = NULL;
-	private $starttime = NULL;
+	private $end_time = NULL;
 	/**
 	 * Запускает буфер
 	 */
 	function __construct() {
 		$this->start_time = microtime();
-		$this->starttime = microtime(true);
+		// $this->start_time = $_SERVER['REQUEST_TIME'];
 		ob_start();
 	}
 
-	public static function getDiff( $s ) {
+	public function getDiff( $s ) {
 		$s = explode( ' ', $s );
-		$f = explode( ' ', microtime() );
+		$f = explode( ' ', $this->end_time );
 
 		$sm = (double) $s[0];
 		$fm = (double) $f[0];
@@ -105,6 +105,7 @@ class Debug_Debugger
 	 * Собирает данные из буфера и дописывает скрипт в тег head
 	 */
 	function __destruct() {
+		$this->end_time = microtime();
 		global $_cfg, $router, $_request;
 		$content = ob_get_contents();
 		ob_end_clean();
@@ -376,7 +377,7 @@ class Debug_Debugger
 					</li>
 					<li>
 						<span class="icon time"></span>
-						<?php echo number_format(self::getDiff($this->start_time), 6); ?> s
+						<?php echo number_format($this->getDiff($this->start_time), 6); ?> s
 					</li>
 					<li>
 						<span class="icon mem"></span>
