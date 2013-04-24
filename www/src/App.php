@@ -58,7 +58,7 @@ function parsePath($path, $current) {
 }
 
 function getLnk($link = '/', $get = array()) {
-	global $_runStack, $_request;
+	global $_runStack;
 
 	$link = parsePath($link, $_runStack[count($_runStack)-1]);
 	if (empty($link))
