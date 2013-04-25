@@ -106,7 +106,7 @@ class Debug_Debugger
 	 */
 	function __destruct() {
 		$this->end_time = microtime();
-		global $_cfg, $router, $_request;
+		global $_db, $_request;
 		$content = ob_get_contents();
 		ob_end_clean();
 
@@ -522,15 +522,13 @@ class Debug_Debugger
 								<td><?php lnk('.'); ?></td>
 							</tr>
 							<tr>
-								<td>query</td>
-								<td><?php echo $_request?></td>
+								<td>request</td>
+								<td><?php echo $_request;?></td>
 							</tr>
-							<?php foreach ($_cfg as $k => $v):?>
-								<tr>
-									<td><?php echo $k?></td>
-									<td><?php echo $this->VarDump($v)?></td>
-								</tr>
-							<?php endforeach?>
+							<tr>
+								<td>db connection</td>
+								<td><?php echo is_null($_db) ? 'No' : 'Yes';?></td>
+							</tr>
 						</table>
 					</div>
 

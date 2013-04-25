@@ -1,8 +1,9 @@
 <?php
 
 // Объявление констант путей и ссылок
-define('BASEPATH', dirname(__FILE__)); // Путь к папке исполняемого кода
+define('PUBLIC', $_SERVER['DOCUMENT_ROOT']); // Публичная папка
 define('URL', 'http://' . $_SERVER['HTTP_HOST']); // Адрес сайта
+define('BASEPATH', dirname(__FILE__)); // Путь к папке исполняемого кода
 define('L_PATH', BASEPATH . '/lib'); // Папка контроллеров
 define('C_PATH', BASEPATH . '/c'); // Папка контроллеров
 define('M_PATH', BASEPATH . '/m'); // Папка моделей
@@ -41,14 +42,14 @@ function parsePath($path, $current) {
 	if (strpos($path, '/') === 0)
 		return substr($path, 1);
 
+	if ($path == '.')
+		return $current;
+
 	if ('/' == $current)
 		return $path;
 
 	if (! $current = substr($current, 1))
 		$current = '';
-
-	if ($path == '.')
-		return $current;
 
 	if ($pos = strrpos($current, '/'))
 		$current = substr($current, 0, $pos);
