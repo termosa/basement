@@ -95,7 +95,42 @@ class Debug_Database_Statement extends PDOStatement
 
 	public function execute( $bound_input_params = NULL ) {
 		$query = parent::execute( $bound_input_params );
+		$this->bound_params = $bound_input_params;
 		Debug_Database_Logger::set($this);
+		return $query;
+	}
+
+	public function showQuery()
+	{
+		$query = $this->queryString;
+		$params = $this->bound_params;
+		
+		$keys = array();
+		$values = array();
+		
+		# build a regular expression for each parameter
+		foreach ($params as $key=>$value)
+		{
+			if (is_string($key))
+			{
+				$keys[] = '/:'.$key.'/';
+			}
+			else
+			{
+				$keys[] = '/[?]/';
+			}
+			
+			if(is_numeric($value))
+			{
+				$values[] = intval($value);
+			}
+			else
+			{
+				$values[] = '"'.$value .'"';
+			}
+		}
+		
+		$query = preg_replace($keys, $values, $query, 1, $count);
 		return $query;
 	}
 }

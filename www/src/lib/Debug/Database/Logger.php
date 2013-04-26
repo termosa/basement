@@ -9,7 +9,7 @@ class Debug_Database_Logger
 		if ( is_null( $query ))
 			$sql = $trace[1]['args'][0];
 		elseif ( gettype($query) == 'object' && get_class( $query ))
-			$sql = $query->queryString;
+			$sql = $query->showQuery();
 		else
 			$sql = (string) $query;
 
