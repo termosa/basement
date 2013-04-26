@@ -90,7 +90,6 @@ class Debug_Debugger
 		else
 		{
 			ob_start();
-				var_dump($var);
 			$data = ob_get_clean();
 			$data = preg_replace('/=>\n\s+/', ' => ', $data);
 			$data = htmlspecialchars($data);
@@ -381,7 +380,6 @@ class Debug_Debugger
 					</li>
 					<li>
 						<span class="icon mem"></span>
-						<?php echo $debug->MemoryUsage()?>
 					</li>
 					<?php if ( class_exists( 'Debug_Database_Logger' )): ?>
 						<li>
@@ -596,7 +594,11 @@ class Debug_Debugger
 		<?php
 		$debugger = ob_get_contents();
 		ob_end_clean();
-		$content = str_replace('</body>', $debugger . '</body>', $content);
+		$debugger = str_replace('<span class="icon mem"></span>', '<span class="icon mem"></span>' . $debug->MemoryUsage(memory_get_usage()), $debugger);
+		if (strpos($content, '</body>'))
+			$content = str_replace('</body>', $debugger . '</body>', $content);
+		else
+			$content .= $debugger;
 
 		echo $content;
 	}
