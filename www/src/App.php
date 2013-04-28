@@ -38,24 +38,38 @@ function incM($class, $returnObj = false) {
 	return inc($class, $returnObj, M_PATH);
 }
 
-function parsePath($path, $current) {
-	if (strpos($path, '/') === 0)
-		return substr($path, 1);
+/**
+ * Генерирует путь пригодный для использования в ссылках и при подключении модулей
+ * @param  string $path    Путь к модулю. '.' или пустая строка - текущий модуль. '/' - ведет в корень приложения. '../../a' - подымается на два модуля выше и вызывает модуль 'a'. 'a/b' - вызывает модуль 'b', который является дочерним модулю 'a', который в свою очередь вложен в текущий модуль.
+ * @param  string $current Корневой путь для пути к модулю. Должен начинаться с символа '/'. Может заканчиваться на '/' только если это весь путь.
+ * @return string          Возвращает путь от корня приложения
+ */
+function parsePath( $path, $current ) {
+	if ( strpos( $path, '/' ) === 0 ) // Все что начинается со слеша - выдается как есть
+	 	return $path;
 
-	if ($path == '.')
+	if ( empty( $path ) || $path == '.' ) // Для пустых урлов и точек создаем рекурсию (оставляем существующий путь)
 		return $current;
 
-	if ('/' == $current)
-		return $path;
+	if ( '/' == $current ) // Если текущий путь является корнем - просто возвращаем переданный путь от корня
+		return '/' . $path;
 
-	if (! $current = substr($current, 1))
-		$current = '';
+	if ( strpos( $path, '..' ) === 0 ) { // Если речь идет о выходе на верхний уровень ...
+		$break = false; // Нам понадобиться флажок для того чтобы выйти из цикла в нужный момент
+		do {
+			$current = substr( $current, 0, strrpos( $current, '/' )); // Подымаем текущий путь на один уровень
 
-	if ($pos = strrpos($current, '/'))
-		$current = substr($current, 0, $pos);
-	$path = $current . '/' . $path;
+			if ( ! isset( $path{2} )) // Если в пути остались только две точки - возвращаем сгенерированный путь
+				return $current;
+			else // В противном случае срезаем вначале точки со слешем
+				$path = substr( $path, 3 );
 
-	return $path;
+			if ( strpos( $path, '..' ) !== 0 ) // Если двоеточий больше нет - устанавливаем флагу значение true чтобы выйти из цикла
+				$break = true;
+		} while ( $break == false );
+	}
+
+	return substr( $current, 0, strrpos( $current, '/' ) + 1 ) . $path; // Убираем последний модуль в текущем пути и крепим переданный
 }
 
 function getLnk($link = '/', $get = array()) {
