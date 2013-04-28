@@ -1,6 +1,6 @@
 <?php
 
-global $_helpers;
+global $_head;
 $_head = array( // Хранилище стилей и скриптов для функции head
 	'css'=>array(
 		'all'=>array(), // Для media="all"

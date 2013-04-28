@@ -601,5 +601,9 @@ class Debug_Debugger
 			$content .= $debugger;
 
 		echo $content;
+		if (function_exists('xdebug_dump_superglobals'))
+			xdebug_dump_superglobals();
 	}
 }
+
+$_d = new Debug_Debugger;
