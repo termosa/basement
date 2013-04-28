@@ -482,6 +482,10 @@ class Debug_Debugger
 								</div>
 							</li>
 						</ul>
+						<?php
+						if (function_exists('xdebug_dump_superglobals'))
+							xdebug_dump_superglobals();
+						?>
 					</div>
 
 					<div id="i-files" class="panel" style="display: none">
@@ -601,8 +605,6 @@ class Debug_Debugger
 			$content .= $debugger;
 
 		echo $content;
-		if (function_exists('xdebug_dump_superglobals'))
-			xdebug_dump_superglobals();
 	}
 }
 
