@@ -15,6 +15,9 @@
 	<div class="row">
 		<button type="submit" name="test" value="test01">Метод <i>renderPath</i> - генерирует пути и ссылки</button>
 	</div>
+	<div class="row">
+		<button type="submit" name="test" value="test02">Метод <i>getLnk</i> - возвращает ссылку пригодную для использования</button>
+	</div>
 
 	<input type="hidden" name="render" value="browser"/>
 </form>

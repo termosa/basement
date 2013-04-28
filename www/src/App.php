@@ -15,26 +15,44 @@ define('JUST_V', 3);
 define('JUST_C', 1);
 
 // Объявление глобальных переменных фреймворка (сравнимо с настройками)
-// global $_request, $_template, $_db, $_runStack;
-$_request = 'page/home'; // Выполняем запрос & запрос по умолчанию
+// global $_query, $_template, $_db, $_runStack;
+$_query = '/page/home'; // Выполняем запрос & запрос по умолчанию
 $_template = 'main'; // Шаблон & шаблон по умолчанию
 $_db = NULL; // Ячейка для адаптера баз данных
 $_runStack = array('/'); // Стэк для запускаемых модулей
 
-if (isset($_GET['r']) && ! empty($_GET['r']) && $_GET['r'] != '/')
-		$_request = '/' . $_GET['r'];
-
-// Подключает библиотеки в зендовском формате, может создать объект
-function inc($class, $returnObj = false, $from = L_PATH) {
-	$r = include_once $from . '/' . implode('/', explode('_', $class)) . '.php';
-
-	if ($returnObj)
-		return new $class;
-	return $r;
+// if (isset($_GET['r']) && ! empty($_GET['r']) && $_GET['r'] != '/')
+// 	$_query = '/' . $_GET['r'];
+if ('/' != $_SERVER['REQUEST_URI']) {
+	if ($get = strpos($_SERVER['REQUEST_URI'], '?'))
+		$_query = substr($_SERVER['REQUEST_URI'], 0, $get);
+	else
+		$_query = $_SERVER['REQUEST_URI'];
 }
 
-// Обертка для inc() которая подключает модели
-function incM($class, $returnObj = false) {
+/**
+ * Подключает файлы
+ * @param  string  $class     Имя класса в формате зенда (Html_Form_DropDown - подключит файл Html/Form/DropDown.php)
+ * @param  boolean $returnObj Если установлен в true - создаст объект класса с именем аналогичным имени запрашиваемого файла и вернет его
+ * @param  string  $from      Путь с которого нужно подключать файл. По умолчанию - стандартная папка для библиотек
+ * @return mixed              Если $returnObj установлен в true - вернет объект класса, а если в false - то вернет то, что вернул подключенный файл
+ */
+function inc($class, $returnObj = false, $from = L_PATH)
+{
+	$return = include_once $from . '/' . implode('/', explode('_', $class)) . '.php'; // Генерируем путь к файлу и тут же его подключаем
+	if ($returnObj)
+		return new $class;
+	return $return;
+}
+
+/**
+ * Подключает модели
+ * @param  string  $class     Имя класса в формате зенда (Profile_Edit - подключит файл Profile/Edit.php)
+ * @param  boolean $returnObj Если установлен в true - создаст объект класса с именем аналогичным имени запрашиваемого файла и вернет его
+ * @return mixed              Если $returnObj установлен в true - вернет объект класса, а если в false - то вернет то, что вернул подключенный файл
+ */
+function incM($class, $returnObj = false)
+{
 	return inc($class, $returnObj, M_PATH);
 }
 
@@ -44,7 +62,8 @@ function incM($class, $returnObj = false) {
  * @param  string $current Корневой путь для пути к модулю. Должен начинаться с символа '/'. Может заканчиваться на '/' только если это весь путь.
  * @return string          Возвращает путь от корня приложения
  */
-function parsePath( $path, $current ) {
+function parsePath( $path, $current )
+{
 	if ( strpos( $path, '/' ) === 0 ) // Все что начинается со слеша - выдается как есть
 	 	return $path;
 
@@ -72,31 +91,57 @@ function parsePath( $path, $current ) {
 	return substr( $current, 0, strrpos( $current, '/' ) + 1 ) . $path; // Убираем последний модуль в текущем пути и крепим переданный
 }
 
-function getLnk($link = '/', $get = array()) {
-	global $_runStack;
+/**
+ * Возвращает пригодную для использования ссылку
+ * @param  string $link Ссылка. Может указываться от корня ('/'), или относительный путь. Если вначале будет '~', то путь будет рассчитываться от запущенного модуля.
+ * @param  array  $get  Массив для передачи GET-запроса
+ * @return string       Возвращает сгенерированную ссылку
+ */
+function getLnk( $link = '/', $get = array() )
+{
+	$getString = '';
+	if ( count( $get )) { // Создаем GET-запрос при наличии необходимых ресурсов
+		$getString = array();
+		foreach ( $get as $key => $val )
+			array_push( $getString, "{$key}={$val}" );
+		$getString = '?' . implode( '&', $getString );
+	}
 
-	$link = parsePath($link, $_runStack[count($_runStack)-1]);
-	if (empty($link))
-		$link = '/';
-	$link = URL . "/index.php?r=" . $link;
+	if ( $link != '/' ) { // Если ссылка указывает на корень сайта - то никаких процедур выполнять не будем, тут все просто
+		if (( ! empty( $link )) && '~' == $link{0} ) { // Если ссылка не пуста и она начинается с символа '~' - рассчитываем путь от модуля ($_runStack)
+			global $_runStack;
+			$current = $_runStack[ count( $_runStack ) - 1 ]; // Получаем текущий модуль
+			if ( ! isset( $link{1} )) // Если ссылка состоит только из символа '~' - возвращаем ссылку на текущий модуль
+				return URL . $current . $getString;
+			$link = substr( $link, 2 ); // Стираем '~/' с начала строки
+		} else {
+			global $_query;
+			if ( empty( $link )) // Если ссылка пуста - просто возвращаем текущую ссылку
+				return URL . $_query . $getString;
+			$current = $_query;
+		}
 
-	foreach ($get as $key => $val)
-		$link .= "&{$key}={$val}";
+		$link = parsePath( $link, $current );
+	}
+
+	$link = URL . $link . $getString;
 
 	return $link;
 }
 
-function lnk($link = '/', $get = array()) {
+function lnk( $link = '/', $get = array() )
+{
 	$link = getLnk($link, $get);
 	echo $link;
 	return $link;
 }
 
-function run($module, $opt=NULL, $mode=2) {
+function run($module, $opt=NULL, $mode=2)
+{
 	global $_runStack, $_template;
 	$return = NULL;
 
-	$module = '/' . parsePath($module, $_runStack[count($_runStack)-1]);
+	$module = parsePath($module, $_runStack[count($_runStack)-1]);
 
 	if (count($_runStack) == 1 && strpos($module, '/_') !== false) {
 		$controller = false;
