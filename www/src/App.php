@@ -8,17 +8,16 @@ define('L_PATH', BASEPATH . '/lib'); // Папка контроллеров
 define('C_PATH', BASEPATH . '/c'); // Папка контроллеров
 define('M_PATH', BASEPATH . '/m'); // Папка моделей
 define('V_PATH', BASEPATH . '/v'); // Папка видов
-define('T_PATH', V_PATH . '/_t'); // Папка шаблонов
+define('T_PATH', V_PATH . '/_template'); // Папка шаблонов
 
 // Объявление необходимых констант для упрощенной работы с фреймворком
 define('JUST_V', 3);
 define('JUST_C', 1);
 
 // Объявление глобальных переменных фреймворка (сравнимо с настройками)
-// global $_query, $_template, $_db, $_runStack;
+// global $_query, $_template, $_runStack;
 $_query = '/page/home'; // Выполняем запрос & запрос по умолчанию
 $_template = 'main'; // Шаблон & шаблон по умолчанию
-$_db = NULL; // Ячейка для адаптера баз данных
 $_runStack = array('/'); // Стэк для запускаемых модулей
 
 // if (isset($_GET['r']) && ! empty($_GET['r']) && $_GET['r'] != '/')
@@ -131,8 +130,7 @@ function getLnk( $link = '/', $get = array() )
 
 function lnk( $link = '/', $get = array() )
 {
-	$link = getLnk($link, $get);
-	echo $link;
+	echo $link = getLnk($link, $get);
 	return $link;
 }
 

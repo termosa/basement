@@ -105,7 +105,7 @@ class Debug_Debugger
 	 */
 	function __destruct() {
 		$this->end_time = microtime();
-		global $_db, $_request;
+		global $_db, $_query;
 		$content = ob_get_contents();
 		ob_end_clean();
 
@@ -525,11 +525,11 @@ class Debug_Debugger
 							</tr>
 							<tr>
 								<td>request</td>
-								<td><?php echo $_request;?></td>
+								<td><?php echo $_query;?></td>
 							</tr>
 							<tr>
 								<td>db connection</td>
-								<td><?php echo is_null($_db) ? 'No' : 'Yes';?></td>
+								<td><?php echo is_null($_db) ? 'Maybe' : 'Yes';?></td>
 							</tr>
 						</table>
 					</div>

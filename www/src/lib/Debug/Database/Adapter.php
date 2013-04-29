@@ -1,8 +1,12 @@
 <?php
 
+inc( 'Debug_Database_Logger' );
+inc( 'Debug_Database_Statement' );
+
 class Debug_Database_Adapter extends PDO
 {
-	public function query( $sql, $var2 = NULL, $var3 = NULL, $var4 = NULL ) {
+	public function query( $sql, $var2 = NULL, $var3 = NULL, $var4 = NULL )
+	{
 		if ( ! is_null( $var4 ))
 			$query = parent::query( $sql, $var2, $var3, $var4 );
 		elseif ( ! is_null( $var3 ))
@@ -12,11 +16,12 @@ class Debug_Database_Adapter extends PDO
 		else
 			$query = parent::query( $sql );
 
-		Debug_Database_Logger::set($query);
+		Debug_Database_Logger::set( $query );
 		return $query;
 	}
 
-	public function exec( $sql ) {
+	public function exec( $sql )
+	{
 		Debug_Database_Logger::set( $sql );
 		return parent::exec( $sql );
 	}

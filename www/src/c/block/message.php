@@ -1,7 +1,9 @@
 <?php
 
-inc('Db_Adapter');
-$pdo = Db_Adapter::getPDO( 'memory' );
+// inc('Db_Adapter');
+// $pdo = Db_Adapter::getPDO( 'memory' );
+inc( 'Db_AdapterLight' );
+$pdo = getDbAdapter();
 
 echo "<pre>";
 //#------------------- Q1 -------------------#//
@@ -32,7 +34,7 @@ $empty = 'empty!!';
 
 
 // Bind Param
-// $query->bindParam(':bar', $bar);
+$query->bindParam(':bar', $bar);
 
 // Bind Value
 // $query->bindValue(':baz', $baz);

@@ -4,14 +4,15 @@ class Debug_Database_Logger
 {
 	public static $log = array();
 
-	public static function set( $query = NULL ) {
+	public static function set( $query = NULL )
+	{
 		$trace = debug_backtrace( DEBUG_BACKTRACE_PROVIDE_OBJECT, 2 );
 		if ( is_null( $query ))
 			$sql = $trace[1]['args'][0];
-		elseif ( gettype($query) == 'object' && get_class( $query ))
+		elseif ( gettype( $query ) == 'object' && get_class( $query ))
 			$sql = $query->showQuery();
 		else
-			$sql = (string) $query;
+			$sql = (string)$query;
 
 		array_push( self::$log, array(
 			'sql' => $sql,
