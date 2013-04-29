@@ -7,7 +7,7 @@ head('js', 'main', 'jquery');
 
 <fieldset>
 	<legend>block/message</legend>
-	<?php $getMessage = run('/block/message', array('sun', 'ice', 'grass'), JUST_C); ?>
+	<?php $getMessage = run('/_block/message', array('sun', 'ice', 'grass'), JUST_C); ?>
 
-	<?php run('/block/message', array('message'=>"Someone sent it to you: {$getMessage}"), JUST_V); ?>
+	<?php run('/_block/message', array('message'=>"Someone sent it to you: {$getMessage}"), JUST_V); ?>
 </fieldset>
